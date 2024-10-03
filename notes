@@ -1,0 +1,19 @@
+----------------------in django urls from one app is assessibe to other app due to inclusion of the urlpatters in main project urls-----------------------------
+In Django, all URLs are routed through a central URL configuration (urls.py), which is usually found at the project level. This file is responsible for mapping URLs to views across all apps within the project.
+When you define a URL pattern in one app (like payment), that pattern is still available globally if it is included in the main urls.py file of your project.
+Even though your checkout view is defined in the payment app, once you include the payment URLs in the project's main urls.py, the URL for checkout becomes available across the entire project, including in the cart app.
+
+
+=------automatically creating profile and shipping address when the user signs up-----------------------
+When a user signs up (i.e., a User instance is created and saved), the post_save signal is triggered.
+The create_shipping function is called with the new User instance.
+Inside the create_shipping function, it checks if the User instance is newly created (via created=True).
+If the user is new, the function automatically creates and saves a ShippingAddress object tied to that user.
+
+
+
+admin==admin,anuj1234
+user==john,young@345
+
+# everything people purchase become separate ordered items in the database (there is orderd-items model )
+# 

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header class="bg-primary py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">categories</h1>
+            {% for cat in categories %}
+            {% endfor %}
+            <p class="lead fw-normal text-white-50 mb-0">We are the among the top 10 technological item seller from Jhapa</p>
+        </div>
+    </div>
+</header>
+{% endblock %}

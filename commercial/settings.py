@@ -41,6 +41,10 @@ INSTALLED_APPS = [
     # custom apps
     "commerce",
     # setting up the django app
+    "cart",
+    "payment",
+    'crispy_forms',
+    'crispy_bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -61,12 +65,16 @@ TEMPLATES = [
         "DIRS": [os.path.join(BASE_DIR,'templates')],
         "APP_DIRS": True,
         "OPTIONS": {
-            "context_processors": [
+            "context_processors":[
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "cart.context_processor.cart"
+                
             ],
+            # we are setting this up
+            
         },
     },
 ]
@@ -121,7 +129,8 @@ USE_TZ = True
 
 # adding static and  media file to base directory
 STATIC_URL = "static/"
-STATICFILES_DIRS=['/static']
+# STATICFILES_DIRS=['/static']
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # STATIC_ROOT=[os.path.join('BASE_DIR','static')]
 MEDIA_URL="media/"
 MEDIA_ROOT=os.path.join('BASE_DIR','media')
@@ -129,3 +138,6 @@ MEDIA_ROOT=os.path.join('BASE_DIR','media')
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
+

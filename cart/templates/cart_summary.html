@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header class="bg-primary py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Shopping Cart</h1>
+            <p class="lead fw-normal text-white-50 mb-0">you are free to add the item to the cart</p>
+        </div>
+    </div>
+</header>
+<br>
+<div style="display:flex; justify-content:space-between;">
+{% if cart_products %}
+        {% for product in cart_products %}
+        <div class="container" style=" display: flex;
+        justify-content: center;
+        align-items: center;">
+        
+            <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="{{ product.image.url }}" alt="Card image cap">
+                <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <br>
+                <p>${{product.price}}</p>
+                <select class="form-select" aria-label="Default select example" id="select{{product.id}}">
+                
+                        {% for key ,value in quantities.items %}
+                            {% if key == product.id|slugify %}
+                            <option selected>  {{ value }}  </option>
+                            {% endif %}
+                        {% endfor %}
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+                </div>
+                <a href="{% url 'index' %}" class="btn btn-primary">home</a>
+                <br>
+                     <button type="button" class="btn btn-secondary update-cart" data-index="{{product.id}}">update</button>
+                 <!-- we add the product in session so that the product are available throughout the session in cart -->
+                     <button type="button" class="btn btn-danger delete-cart" data-index="{{product.id}}">remove</button>
+
+            </div>
+        </div>   
+        <br> 
+            {% endfor %}
+    <br>
+    <div><h3>Total:${{totals}}</h3>
+        <a href="{% url 'checkout' %}" class="btn btn-success">Checkout</a></div>
+       
+    
+    <br><br>
+{% else %}
+      THE CART IS EMPTY!
+{% endif %}
+</div>  
+<!-- jquery below -->
+<script>
+     $(document).on('click','.update-cart',function(e){
+     e.preventDefault();
+     var product_id=$(this).data('index')
+     $.ajax({
+            type:'POST',
+            url: "{% url 'cart_update' %}",
+            data:{
+                product_id:$(this).data('index'),
+                product_qty: $('#select' + product_id + ' option:selected').text(),
+                csrfmiddlewaretoken:'{{csrf_token}}',
+                action:'post'
+        },
+     success:function(json){
+           location.reload()
+        //    after the button is pressed the function is called to show the success message 
+        },
+     error:function(xhr,errmsg,err){
+
+        }
+    });
+    })
+
+    $(document).on('click','.delete-cart',function(e){
+     e.preventDefault();
+     var product_id=$(this).data('index')
+     $.ajax({
+            type:'POST',
+            url: "{% url 'cart_delete' %}",
+            data:{
+                product_id:$(this).data('index'),
+                product_qty: $('#select' + product_id + ' option:selected').text(),
+                csrfmiddlewaretoken:'{{csrf_token}}',
+                action:'post'
+        },
+     success:function(json){
+           location.reload()
+        },
+     error:function(xhr,errmsg,err){
+
+        }
+    });
+    })
+ 
+</script>
+{% endblock %}  
+  

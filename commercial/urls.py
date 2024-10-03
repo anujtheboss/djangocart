@@ -16,12 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from commerce.views import index
 from . import settings
 from django.conf.urls.static import static
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("",include('commerce.urls')),
+    path("cart/",include('cart.urls')),
+    path("payment/",include('payment.urls')),
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+# including urls from commerce and cart app to main urls
 # This static setup helps to upload images and all
 # commerce is the django app and we are setting up for the django app

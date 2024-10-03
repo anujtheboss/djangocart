@@ -12,9 +12,49 @@
                             <div class="card-body">
                               <h5 class="card-title">Card title</h5>
                               <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                              <a href="{% url 'index' %}" class="btn btn-primary">Go Back</a>
+                              <br>
+                              <p>ID:{{products.id}}</p>
+                                <select id="qty-cart" >
+                                    <option selected>Open this select menu</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                                <br><br>
+                              <a href="{% url 'index' %}" class="btn btn-primary">home</a>
+                              <!-- <br> -->
+                              <button  type="button" class="btn btn-primary" value="{{ products.id }}" id="add-cart">add to cart</button>
                             </div>
-                          </div>        
+                          </div>    
+                          
+                          <!-- jquery code below -->
+ <script> 
+//  performed when the add to cart button is pressed 
+// calls cart_add function in cart and pass below information 
+// cart_add function receives the product from this html page and add the items to the cart
+// jquery send the below data to the card_add function in the backend
+    $(document).on('click','#add-cart',function(e){
+    e.preventDefault();
+    $.ajax({
+        type:'POST',
+        url: "{% url 'cart_add' %}",
+        data:{
+            product_id:$('#add-cart').val(),
+            product_qty:$('#qty-cart option:selected').text(),
+            csrfmiddlewaretoken:'{{csrf_token}}',
+            action:'post'
+        },
+        success:function(json){
+            // console.log(json)
+                 // this is to show in console
+            document.getElementById("cart_quantity").textContent=json.qty
+            location.reload()
+        },
+        error:function(xhr,errmsg,err){
 
+        }
+    });
+    })
+ </script>
         </section>
 {% endblock %}
