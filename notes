@@ -13,8 +13,7 @@ If the user is new, the function automatically creates and saves a ShippingAddre
 
 
 admin==admin,anuj1234
-user==john,young@345
-
+user=yam,family@123
 # everything people purchase become separate ordered items in the database (there is orderd-items model )
 #
 

@@ -5,13 +5,16 @@ from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .forms import SignUpForm,UpdateUserForm,UserInfoForm,ChangePasswordForm
+from .forms import SignUpForm,UserUpdateForm,UserInfoForm,ChangePasswordForm
 from django import forms
 from payment.forms import ShippingForm
 from payment.models import ShippingAddress
 from django.db.models import Q
 from cart.cart import Cart
 import json
+from .forms import UserUpdateForm,ProfileUpdateForm
+from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 def category_summary(request):
     #  fetch categories from category model from database
@@ -76,19 +79,47 @@ def register_user(request):
               return redirect("register")
     else:
          return render(request,'register.html',{'form':form})
-def update_user(request):
-     if request.user.is_authenticated:
-          current_user=User.objects.get(id=request.user.id)
-          user_form=UpdateUserForm(request.POST or None, instance=current_user)
-          if user_form.is_valid():
-               user_form.save()
-               login(request,current_user)
-               messages.success(request,'user has been updated successfully!!')
-               return redirect('home')
-          return render(request,'update_user.html',{'userform':user_form})
-     else:
-          messages.success(request,'you must be logged in!!')
-          return redirect('index')
+    
+
+
+@login_required
+def profile(request):
+    if request.method == 'POST':
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+        p_form = ProfileUpdateForm(request.POST,
+                                    request.FILES,
+                                    instance=request.user.profile)
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            messages.success(request, f'Your account has been updated! You are able to login')
+            return redirect('profile')
+    else:
+        u_form = UserUpdateForm(instance=request.user)
+        p_form = ProfileUpdateForm(instance=request.user.profile)
+    context ={
+        'u_form':u_form,
+        'p_form':p_form
+    }
+    return render(request,'profile.html',context)    
+# def update_user(request):
+#      if request.user.is_authenticated:
+#           current_user=User.objects.get(id=request.user.id)
+#           user_form=UpdateUserForm(request.POST or None, instance=current_user)
+#           if user_form.is_valid():
+#                user_form.save()
+#                login(request,current_user)
+#                messages.success(request,'user has been updated successfully!!')
+#                return redirect('home')
+#           return render(request,'update_user.html',{'userform':user_form})
+#      else:
+#           messages.success(request,'you must be logged in!!')
+#           return redirect('index')
+     
+
+
+
+
 def update_info(request):
 	if request.user.is_authenticated:
 		# Get Current User

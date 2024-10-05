@@ -125,7 +125,8 @@
                                         </div>
                                         {% if user.is_authenticated %}
                                         <div class="header__top__right__auth" style="margin-right:10px;"></div>
-                                                <a href="#"><img style="width: 35px; height: 35px; margin-left:50px;" class="rounded-circle account-img" src="{{ user.profile.image.url }}"></a>
+                                        <a href="{% url 'logout' %}"><i class="fa fa-user"></i> Logout</a>
+                                                <a href="{% url 'profile' %}"><img style="width: 35px; height: 35px; margin-left:50px;" class="rounded-circle account-img" src="{{ user.profile.image.url }}"></a>
                                            
                                         </div>
                                         {% else %}
@@ -135,7 +136,7 @@
                                         <div class="header__top__right__auth" style="margin-right:10px;"></div>
                                             <a href="{% url 'register' %}"><i class="fa fa-user"></i> Register</a>
                                             <!-- <div style=" line-height: 54px; height: 39px;"> -->
-                                                <a href="{% url 'profile' %}"><img style="width: 35px; height: 35px; margin-left:50px;" class="rounded-circle account-img" src="{{ user.profile.image.url }}"></a>
+                                                <!-- <a href=""><img style="width: 35px; height: 35px; margin-left:50px;" class="rounded-circle account-img" src="{{ user.profile.image.url }}"></a> -->
                                             <!-- </div> -->
                                         {% endif %}
                                         </div>
