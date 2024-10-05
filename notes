@@ -16,4 +16,6 @@ admin==admin,anuj1234
 user==john,young@345
 
 # everything people purchase become separate ordered items in the database (there is orderd-items model )
-# 
+#
+
+#   <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css"> this allows to access the static file from one app to other app

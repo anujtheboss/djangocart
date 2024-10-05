@@ -4,15 +4,15 @@
 <header class="bg-primary py-5">
     <div class="container px-4 px-lg-5 my-5">
         <div class="text-center text-white">
-            <h1 class="display-4 fw-bolder">you are successfully logged in to the system</h1>
+            <h1 class="display-4 fw-bolder">login to access the service</h1>
             <p class="lead fw-normal text-white-50 mb-0">explore what you prefer</p>
 
         </div>
     </div>
 </header>
-<form method="POST" action="{% url 'login' %}">
+<form method="POST" style="margin-bottom:20px;" action="{% url 'login' %}">
     {% csrf_token %}
-    <div style="width:500px; margin-left:35%; margin-top:30px;">
+    <div style="padding:10px; width:500px; margin-left:35%; margin-top:30px; border:2px solid rgb(0, 157, 255);" >
         <div class="form-group">
      
             <input type="text" class="form-control" id="exampleInputEmail1" name="username" placeholder="Enter username">
@@ -28,7 +28,7 @@
           </div>
     </div>
    
-    <div style="margin-left: 50%;"><button type="submit" class="btn btn-primary">Login</button></div>
+    <div style="margin-left:35%;"><button style="padding:10px 231px;" type="submit" class="btn btn-primary">Login</button></div>
     
   </form>
 {% endblock %}

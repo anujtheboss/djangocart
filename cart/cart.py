@@ -170,16 +170,28 @@ class Cart():
     # 		current_user.update(old_cart=str(carty))
     
     
-    def add(self,product,quantity):
+
+
+    # Add or update product in the cart
+    # if product_id in self.cart:
+    #     # Update the quantity if the product is already in the cart
+    #     self.cart[product_id] += quantity
+    # else:
+    #     # Add new product to the cart with the specified quantity
+    #     self.cart[product_id] = quantity
+
+    # self.session.modified = True
+
+    def add(self,product):
             product_id=str(product.id)
-            product_qty=str(quantity)
+            # product_qty=str(quantity)
             if product_id in self.cart:
                 # checking if already in cart
                 pass
             else:
                 # self.cart[product_id]={'price':str(product.price)}
                     # here product_id is the key of the cart whose value is a dictionary
-                self.cart[product_id]=int(product_qty)
+                self.cart[product_id]=int(2)
 
             self.session.modified=True
             # dealing with the loggedin user
@@ -275,6 +287,7 @@ class Cart():
         return thing
 
     def delete(self, product):
+        print("delete")
         product_id = str(product)
         # Delete from dictionary/cart
         if product_id in self.cart:
@@ -286,8 +299,9 @@ class Cart():
         if self.request.user.is_authenticated:
             # Get the current user profile
             current_user = Profile.objects.filter(user__id=self.request.user.id)
-            # Convert {'3':1, '2':4} to {"3":1, "2":4}
-            carty = str(self.cart)
-            carty = carty.replace("\'", "\"")
+            # Convert {'3':1, '2':4} to {"3":1, "2":4}\
+            if current_user:
+                carty = str(self.cart)
+                carty = carty.replace("\'", "\"")
             # Save carty to the Profile Model
         current_user.update(old_cart=str(carty))

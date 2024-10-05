@@ -43,8 +43,8 @@ def login_user(request):
                           cart=Cart(request)
                           for key,value in converted_cart.items():
                                product = Product.objects.get(id=key) 
-                               cart.add(product=product,quantity=value)
-                             
+                            #    cart.add(product=product,quantity=value)
+                               cart.add(product=product)
                         # loop through the cart and add the item from the database
                         messages.success(request,('you are successfully logged in'))
                         return redirect('index')
@@ -174,4 +174,3 @@ def search(request):
              return render(request,'search.html',{'searched':searched})
      else:
         return render(request,'search.html',{})
-    

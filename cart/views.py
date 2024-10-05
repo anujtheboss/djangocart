@@ -61,9 +61,9 @@ def cart_summary(request):
 	# Get the cart
 	cart = Cart(request)
 	cart_products = cart.getproducts
-	quantities = cart.getquants
+	# quantities = cart.getquants
 	totals = cart.totals()
-	return render(request, "cart_summary.html", {"cart_products":cart_products, "quantities":quantities, "totals":totals})
+	return render(request, "cart_summary.html", {"cart_products":cart_products,"totals":totals})
 
 
 
@@ -75,12 +75,14 @@ def cart_add(request):
 	if request.POST.get('action') == 'post':
 		# Get stuff
 		product_id = int(request.POST.get('product_id'))
-		product_qty = int(request.POST.get('product_qty'))
+		# product_qty = int(request.POST.get('product_qty'))
 
 		# lookup product in DB
 		product = get_object_or_404(Product, id=product_id)
 		# Save to session
-		cart.add(product=product, quantity=product_qty)
+		# cart.add(product=product, quantity=product_qty)
+		cart.add(product=product)
+		
 
 		# Get Cart Quantity
 		cart_quantity = cart.__len__()
@@ -91,6 +93,7 @@ def cart_add(request):
 		messages.success(request, ("Product Added To Cart..."))
 		return response
 
+	
 def cart_delete(request):
 	cart = Cart(request)
 	if request.POST.get('action') == 'post':
