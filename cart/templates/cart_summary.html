@@ -89,7 +89,7 @@
                                     <th></th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <!-- <tbody>
                                 {% if cart_products %}
                                 {% for product in cart_products %}
                                 <tr>
@@ -116,14 +116,62 @@
                                     <!-- <td class="shoping__cart__item__close">
                                         <span class="icon_close"></span>
                                     </td> -->
-                                    <td> <button type="button" class="btn btn-secondary update-cart" data-index="{{product.id}}">update</button></td>
-                                    <td><button type="button" class="btn btn-danger delete-cart" data-index="{{product.id}}">remove</button></td>
+                                    <!-- <td> <button type="button" class="btn btn-secondary update-cart" data-index="{{product.id}}">update</button></td>
+                                    <td><button type="button" class="btn btn-danger delete-cart" data-index="{{product.id}}">remove</button></td> -->
                                     <!-- when the product is deleted the loop wouldnt run for that product and theus this above two line will also be removed for that producct -->
-                                </tr>
+                                <!-- </tr>
                                 {% endfor %}
                                 {% else %}
                                   The cart is empty!
-                                {% endif %}
+                                {% endif %} --> 
+
+
+                                <tbody>
+                                    {% if cart_products %}
+                                    {% for product in cart_products %}
+                                    <tr>
+                                        <td class="shoping__cart__item">
+                                            <img src="{% static 'img/cart/cart-1.jpg' %}" alt="">
+                                            <h5>{{ product.name }}</h5>
+                                        </td>
+                                        <td class="shoping__cart__price">
+                                            <span class="product-price">{{ product.price }}</span> 
+                                        </td>
+                                        <td class="shoping__cart__quantity">
+                                            <div class="quantity">
+                                                <div class="pro-qty">
+                                                   
+                                                    <input type="text" class="qty-input" value="1" data-product-id="{{ product.id }}"> 
+                                                 
+                                                </div>
+                                            </div>
+                                            <!-- <button type="button" value="{{ product.id }}" class="calculate-total">  
+                                                <i class="fa fa-shopping-cart"></i>
+                                              
+                                            </button> -->
+                                        </td>
+                                        <td class="shoping__cart__total">
+                                            Total: <span class="total-price" id="total-price-{{ product.id }}">0</span>  <!-- Unique ID for total price -->
+                                        </td>
+                                        <td class="shoping__cart__item__close">
+                                            <span class="icon_close"></span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="5">The cart is empty!</td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+
+
+
+
+
+
+
+
                                 <!-- <tr>
 
                                     <td class="shoping__cart__item">
@@ -165,11 +213,11 @@
                                     <td class="shoping__cart__total">
                                         $69.99
                                     </td> -->
-                                    <td class="shoping__cart__item__close">
+                                    <!-- <td class="shoping__cart__item__close">
                                         <span class="icon_close"></span>
                                     </td>
-                                </tr>
-                            </tbody>
+                                </tr> -->
+                            <!-- </tbody> -->
                         </table>
                     </div>
                 </div>
@@ -198,59 +246,60 @@
                         <h5>Cart Total</h5>
                         <ul>
                             <li>Subtotal <span>{{total}}</span></li>
-                            <li>Total <span>{{ total }}</span></li>
+                            <li>Total <span class="totals"></span></li>
                         </ul>
-                        <a href="#" class="primary-btn">PROCEED TO CHECKOUT</a>
+                        <a href="{% url 'update_info' %}" class="primary-btn">PROCEED TO CHECKOUT</a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    <!-- Shoping Cart Section End --
+  
 
-
- 
-    <tbody>
-        {% if cart_products %}
-        {% for product in cart_products %}
-        <tr>
-            <td class="shoping__cart__item">
-                <img src="{% static 'img/cart/cart-1.jpg' %}" alt="">
-                <h5>{{ product.name }}</h5>
-            </td>
-            <td class="shoping__cart__price">
-                <span class="product-price">{{ product.price }}</span>  <!-- Wrapped in a span for easier access -->
-            </td>
-            <td class="shoping__cart__quantity">
-                <div class="quantity">
-                    <div class="pro-qty">
-                        <input type="text" class="qty-input" value="1">  <!-- Added class for easier selection -->
-                    </div>
-                </div>
-                <button type="button" value="{{ product.id }}" class="calculate-total">  <!-- Button to trigger calculation -->
-                    <i class="fa fa-shopping-cart"></i>
-                </button>
-            </td>
-            <td class="shoping__cart__total">
-                Total: <span class="total-price" id="total-price-{{ product.id }}">0</span>  <!-- Unique ID for total price -->
-            </td>
-            <td class="shoping__cart__item__close">
-                <span class="icon_close"></span>
-            </td>
-        </tr>
-        {% endfor %}
-        {% else %}
-        <tr>
-            <td colspan="5">The cart is empty!</td>
-        </tr>
-        {% endif %}
-    </tbody>
     
-    <!-- Include jQuery -->
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
         $(document).ready(function() {
-            $(document).on('click', '.calculate-total', function(e) {
+            // Trigger when the quantity input value changes
+            $(document).on('input', '.qty-input', function(e) {
+                // Get the price from the product price span
+                var productPrice = parseFloat($(this).closest('tr').find('.product-price').text().replace(/[^0-9.-]+/g,"")); // Removing any currency symbols
+                
+                // Get the quantity value from the input field
+                var productQty = parseInt($(this).val());
+                
+                // Ensure the quantity is a valid number
+                if (!isNaN(productQty) && productQty > 0) {
+                    // Calculate the total price
+                    // var totals=0
+                    var totalPrice = productPrice * productQty;
+                    // var totals=totals + totalPrice
+                    // Update the total price in the HTML
+                    var productId = $(this).data('product-id'); // Get the product ID from the data attribute
+                    $('#total-price-' + productId).text(totalPrice.toFixed(2)); // Update the specific product total
+                    $('.totals').text(totals.toFixed(2));
+                } else {
+                    // If the quantity is not valid, set the total to 0
+                    var productId = $(this).data('product-id');
+                    $('#total-price-' + productId).text('0.00');
+                }
+                // var totals=0
+                // $('.total_price').each(function(){
+                //    var totals=totals + totalPrice     
+                //    $('.totals').text(totals.toFixed(2));
+                //  });
+            });
+        });
+    </script>
+    
+
+
+    <!-- <script>
+        $(document).ready(function() {
+            // $(document).on('click', '.calculate-total', function(e) {
+            $(document).on('input', '.qty-input', function(e) {
+
                 e.preventDefault();
                 
                 // Get the price from the product price span
@@ -269,6 +318,10 @@
         });
     </script>
     
-    
+     -->
+ 
+     
+
+
 {% endblock %}
     <!-- Footer Section Begin -->
