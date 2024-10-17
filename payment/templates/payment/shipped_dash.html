@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header class="bg-primary py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Wanna Know About Us</h1>
+            <p class="lead fw-normal text-white-50 mb-0">We are the among the top 10 technological item seller from Jhapa</p>
+        </div>
+    </div>
+</header>
+
+
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Order</th>
+        <th scope="col">Price</th>
+        <th scope="col">Customer Email</th>
+        <th scope="col">date shipped</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for item in orders %}
+      <tr>
+        <td>{{ item.id }}</td>
+        <td>{{ item.amount_paid }}</td>
+        <td>{{ item.email }}</td>
+        <td>{{ item.date_shipped }}</td>
+
+        
+      </tr>
+      {% endfor %}
+    </tbody>
+</table>
+      
+{% endblock %}

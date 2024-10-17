@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<header class="bg-primary py-5">
+<header style="background-color:#7FAD39" class="py-5">
     <div class="container px-4 px-lg-5 my-5">
         <div class="text-center text-white">
             <h1 class="display-4 fw-bolder">Review Your Order</h1>
@@ -13,7 +13,7 @@
 <div class="container">
   <div class="row">
        <div class="col-md-6 offset-md-3">
-           <div class="card">
+           <div style="border-color:#7FAD39" class="card">
                <div class="card-header">
                    ORDER SUMMARY
                 </div>
@@ -33,9 +33,9 @@
                            </small> 
                         {% endfor %}
                         
-                    <div><strong>Total: ${{totals}}</strong></div>
+                    <div><strong>Total: ${{grand_total}}</strong></div>
                     <br>
-                    <a href="{% url 'cart_summary %'}" class="btn btn-outline-primary">cart_update</a>
+                    <a style="background-color:#7FAD39; color:#fff; border-color:#fff;" href="{% url 'cart_summary' %}" class="btn btn-outline-primary">cart_update</a>
                            
                     </p>
          
@@ -43,7 +43,7 @@
                </div>
         </div>
 
-        <div class="card">
+        <div style="border-color:#7FAD39" class="card">
             <div class="card-header">
               shipping info
             </div>
@@ -52,7 +52,7 @@
               <form method="POST" action="{% url 'biling_info' %}">
                 {% csrf_token %}
                 {{ shipping_form.as_p}}
-                <button type="submit" class="btn btn-outline-primary">continue billing</button>
+                <button style="background-color:#7FAD39; color:#fff; border-color:#fff;" type="submit" class="btn btn-outline-primary">continue billing</button>
             </div>
           </div>
     </div>

@@ -45,10 +45,11 @@ def login_user(request):
                         # get the cart
                           cart=Cart(request)
                           for key,value in converted_cart.items():
-                               product = Product.objects.get(id=key) 
+                            #    product = Product.objects.get(id=key) 
                             #    cart.add(product=product,quantity=value)
-                               cart.add(product=product)
+                                # cart.add(product=product)
                         # loop through the cart and add the item from the database
+                                cart.db_add(product=key)
                         messages.success(request,('you are successfully logged in'))
                         return redirect('index')
           else:

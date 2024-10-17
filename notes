@@ -18,3 +18,7 @@ user=yam,family@123
 #
 
 #   <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css"> this allows to access the static file from one app to other app
+
+
+admin
+youngbro@345

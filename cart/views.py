@@ -61,9 +61,9 @@ def cart_summary(request):
 	# Get the cart
 	cart = Cart(request)
 	cart_products = cart.getproducts
-	# quantities = cart.getquants
-	totals = cart.totals()
-	return render(request, "cart_summary.html", {"cart_products":cart_products,"totals":totals})
+	quantities = cart.getquants
+	grand_total,product_totals = cart.totals()
+	return render(request, "cart_summary.html", {"cart_products":cart_products,"quantities":quantities,"grand_total":grand_total,"product_totals":product_totals})
 
 
 
@@ -119,5 +119,6 @@ def cart_update(request):
 
 		response = JsonResponse({'qty':product_qty})
 		#return redirect('cart_summary')
+		print(response)
 		messages.success(request, ("Your Cart Has Been Updated..."))
 		return response

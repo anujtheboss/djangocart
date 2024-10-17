@@ -125,15 +125,15 @@ class Cart():
         # Make sure cart is available on all pages of site
         self.cart = cart
 
-    def db_add(self, product, quantity):
+    def db_add(self, product):
         product_id = str(product)
-        product_qty = str(quantity)
+        # product_qty = str(quantity)
         # Logic
         if product_id in self.cart:
             pass
         else:
             #self.cart[product_id] = {'price': str(product.price)}
-            self.cart[product_id] = int(product_qty)
+            self.cart[product_id] = int(1)
 
         self.session.modified = True
 
@@ -191,7 +191,7 @@ class Cart():
             else:
                 # self.cart[product_id]={'price':str(product.price)}
                     # here product_id is the key of the cart whose value is a dictionary
-                self.cart[product_id]=int(2)
+                self.cart[product_id]=int(1)
 
             self.session.modified=True
             # dealing with the loggedin user
@@ -226,7 +226,8 @@ class Cart():
         # Get quantities
         quantities = self.cart
         # Start counting at 0
-        total = 0
+        grand_total = 0
+        product_totals={}
         
         for key, value in quantities.items():
             # Convert key string into into so we can do math
@@ -234,13 +235,14 @@ class Cart():
             for product in products:
                 if product.id == key:
                     if product.is_sale:
-                        total = total + (product.sale_price * value)
+                        product_total = product.sale_price * value
                     else:
-                        total = total + (product.price * value)
+                        product_total = product.price * value
+                        # return product.price*value
+                    grand_total+=product_total
+                    product_totals[product.id]=product_total
 
-
-
-        return total
+        return grand_total,product_totals
 
 
 
@@ -258,12 +260,13 @@ class Cart():
 
     def getquants(self):
         quantities = self.cart
+        # self.cart has dictionary with id as key and quantity as value
         return quantities
 
     def update(self, product, quantity):
-        product_id = str(product.id)
+        product_id = str(product)
         product_qty = int(quantity)
-
+        print(product_qty)
         # Get cart
         ourcart = self.cart
         # Update Dictionary/cart
@@ -271,7 +274,7 @@ class Cart():
 
         self.session.modified = True
     
-
+        
         # Deal with logged in user
         if self.request.user.is_authenticated:
             # Get the current user profile
@@ -300,7 +303,7 @@ class Cart():
             # Get the current user profile
             current_user = Profile.objects.filter(user__id=self.request.user.id)
             # Convert {'3':1, '2':4} to {"3":1, "2":4}\
-            if current_user:
+            if current_user.exists():
                 carty = str(self.cart)
                 carty = carty.replace("\'", "\"")
             # Save carty to the Profile Model

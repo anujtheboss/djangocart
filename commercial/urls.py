@@ -23,7 +23,9 @@ urlpatterns = [
     path("",include('commerce.urls')),
     path("cart/",include('cart.urls')),
     path("payment/",include('payment.urls')),
-]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # including urls from commerce and cart app to main urls
 # This static setup helps to upload images and all
 # commerce is the django app and we are setting up for the django app

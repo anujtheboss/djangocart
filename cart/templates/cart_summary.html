@@ -131,7 +131,7 @@
                                     {% for product in cart_products %}
                                     <tr>
                                         <td class="shoping__cart__item">
-                                            <img src="{% static 'img/cart/cart-1.jpg' %}" alt="">
+                                            <img src="{{ product.image.url }}" alt="">
                                             <h5>{{ product.name }}</h5>
                                         </td>
                                         <td class="shoping__cart__price">
@@ -139,20 +139,40 @@
                                         </td>
                                         <td class="shoping__cart__quantity">
                                             <div class="quantity">
-                                                <div class="pro-qty">
+                                                <!-- <div class="pro-qty"> -->
                                                    
-                                                    <input type="text" class="qty-input" value="1" data-product-id="{{ product.id }}"> 
-                                                 
-                                                </div>
+                                                    <!-- <input type="text" class="qty-input" value="1" data-product-id="{{ product.id }}">  -->
+                                                    <select class="form-select form-select-sm" id="select{{product.id}}">
+                                                        <!-- select+product id is used to make id unique for each product -->
+
+                                                    {% for key, value in quantities.items %}
+                                                        {% if key == product.id|slugify %}
+                                                    <option selected>{{ value }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    
+                                                              <option value="1">1</option>
+                                                              <option value="2">2</option>
+                                                              <option value="3">3</option>
+                                                              <option value="4">4</option>
+                                                              <option value="5">5</option>
+                                                            </select>
+                                                            <button type="button" data-index="{{product.id}}" class="btn btn-secondary update-cart">Update</button>
+                                                            <button type="button" data-index="{{product.id}}" class="btn btn-danger delete-product">Remove</button>
+                                                <!-- </div> -->
                                             </div>
                                             <!-- <button type="button" value="{{ product.id }}" class="calculate-total">  
                                                 <i class="fa fa-shopping-cart"></i>
                                               
                                             </button> -->
                                         </td>
-                                        <td class="shoping__cart__total">
-                                            Total: <span class="total-price" id="total-price-{{ product.id }}">0</span>  <!-- Unique ID for total price -->
-                                        </td>
+                                        {% for product_id,product_total in product_totals.items %}
+                                           {% if product_id == product.id %}
+                                            <td class="shoping__cart__total">
+                                                <span class="total-price" id="total-price-{{ product.id }}">{{ product_total }}</span>  <!-- Unique ID for total price -->
+                                            </td>
+                                            {% endif %}
+                                        {% endfor %}
                                         <td class="shoping__cart__item__close">
                                             <span class="icon_close"></span>
                                         </td>
@@ -245,10 +265,10 @@
                     <div class="shoping__checkout">
                         <h5>Cart Total</h5>
                         <ul>
-                            <li>Subtotal <span>{{total}}</span></li>
-                            <li>Total <span class="totals"></span></li>
+                            <li>Subtotal <span></span></li>
+                            <li>Total <span class="totals">{{grand_total}}</span></li>
                         </ul>
-                        <a href="{% url 'update_info' %}" class="primary-btn">PROCEED TO CHECKOUT</a>
+                        <a href="{% url 'checkout' %}" class="primary-btn">PROCEED TO CHECKOUT</a>
                     </div>
                 </div>
             </div>
@@ -293,7 +313,60 @@
         });
     </script>
     
+    <script>
+        
+            $(document).on('click','.update-cart',function(e){
+            e.preventDefault();
+            var product_id=$(this).data('index')
+            $.ajax({
+                    type:'POST',
+                    url: "{% url 'cart_update' %}",
+                    data:{
+                        product_id:$(this).data('index'),
+                        product_qty: $('#select' + product_id + ' option:selected').text(),
+                        csrfmiddlewaretoken:'{{csrf_token}}',
+                        action:'post'
+                        
+                },
+            success:function(json){
+                location.reload()
+                //    after the button is pressed the function is called to show the success message 
+                },
+            error:function(xhr,errmsg,err){
 
+        }
+    });
+    })
+
+    $(document).on('click', '.delete-product', function(e){
+    e.preventDefault();
+    // grab the product id
+    //var productid = $(this).data('index');
+
+    $.ajax({
+    type: 'POST',
+    url: "{% url 'cart_delete' %}",
+    data: {
+      product_id: $(this).data('index'),
+      csrfmiddlewaretoken: '{{ csrf_token }}',
+      action: 'post'
+    },
+    success: function(json){
+        //console.log(json)
+        //document.getElementById("cart_quantity").textContent = json.qty
+        location.reload();
+    },
+
+    error: function(xhr, errmsg, err){
+
+    }
+
+
+    });
+
+})
+
+    </script>
 
     <!-- <script>
         $(document).ready(function() {

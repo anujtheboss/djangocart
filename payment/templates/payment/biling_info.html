@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<header class="bg-primary py-5">
+<header style="background-color:#7FAD39;" class="py-5">
     <div class="container px-4 px-lg-5 my-5">
         <div class="text-center text-white">
             <h1 class="display-4 fw-bolder">Biling information</h1>
@@ -12,7 +12,7 @@
 <br>
 <div class="container">
   <div class="row">
-       <div class="col-md-6 offset-md-3">
+       <div class="col-md-4">
            <div class="card">
                <div class="card-header">
                    ORDER SUMMARY
@@ -33,45 +33,91 @@
                            </small> 
                         {% endfor %}
                         
-                    <div><strong>Total: ${{totals}}</strong></div>
+                    <div><strong>Total: ${{grand_total}}</strong></div>
                     <br>
-                    <a href="{% url 'cart_summary %'}" class="btn btn-outline-primary">cart_update</a>
+                    <a style="background-color:#7FAD39; color:#fff; border-color:#fff;" href="{% url 'cart_summary %'}" class="btn btn-outline-primary">cart_update</a>
                            
                     </p>
          
                 </div>
-               </div>
+            </div>
         </div>
 
 <!-- shipping info here -->
+<div class="col-md-4">
+
         <div class="card">
             <div class="card-header">
               shipping info
             </div>
             <div class="card-body">
               <!-- <h5 class="card-title">shipping details</h5> -->
-               
-               
-               name:{{ shipping_info.shipping_full_name}} 
+               <table>
+               <thead>
+                <th>info</th>
+                <th>detail</th>
+               </thead>
+                <tbody>
+                    <tr>
+                        <td>name</td>
+                        <td>{{ shipping_info.shipping_full_name}}</td>
+                    </tr>
+                    <tr>
+                        <td>email</td>
+                        <td>{{ shipping_info.shipping_email}}</td>
+                    </tr>
+                    <tr>
+                        <td>address1</td>
+                        <td>{{ shipping_info.shipping_address1}}</td>
+                    </tr>
+                    <tr>
+                        <td>address2</td>
+                        <td>{{ shipping_info.shipping_address2}}</td>
+                    </tr>
+                    <tr>
+                        <td>city</td>
+                        <td>{{ shipping_info.shipping_city}}</td>
+                    </tr>
+                    <tr>
+                        <td>state</td>
+                        <td>{{ shipping_info.shipping_state}}</td>
+                    </tr>
+                    <tr>
+                        <td>zipcode</td>
+                        <td>{{ shipping_info.shipping_zipcode}}</td>
+                    </tr>
+                    <tr>
+                        <td>country</td>
+                        <td>{{ shipping_info.shipping_country}}</td>
+                    </tr>
+                </tbody>
+               </table>
+               <!-- <ul>
+                
+                    <tr>{{ shipping_info.shipping_full_name}}</tr>
+                
+               </ul>
+               name: {{ shipping_info.shipping_full_name}} 
                <br>
-               email:{{ shipping_info.shipping_email}}
+               email: {{ shipping_info.shipping_email}}
                <br>
-               address1:{{ shipping_info.shipping_address1}}
+               address1: {{ shipping_info.shipping_address1}}
                <br>
-               address2:{{ shipping_info.shipping_address2}}
+               address2: {{ shipping_info.shipping_address2}}
                <br>
-               city:{{ shipping_info.shipping_city}}
+               city: {{ shipping_info.shipping_city}}
                <br>
-               state:{{ shipping_info.shipping_state}}
+               state: {{ shipping_info.shipping_state}}
                <br>
-               zipcode:{{ shipping_info.shipping_zipcode}}
+               zipcode: {{ shipping_info.shipping_zipcode}}
                <br>
-               country:{{ shipping_info.shipping_country}}
-               <br><br><br>
-               <a href="{% url 'checkout' %}" class="btn btn-outline-primary">update shipping</a>
+               country: {{ shipping_info.shipping_country}}
+               <br><br><br> -->
+               <a style="background-color:#7FAD39; color:#fff; border-color:#fff;" href="{% url 'checkout' %}" class="btn btn-outline-primary">update shipping</a>
             </div>
         </div>
-
+</div>
+<div class="col-md-4 offset">
         <div class="card">
             <div class="card-header">
               Billing Info
@@ -82,15 +128,16 @@
               {{ biling_form.as_p }}
               
             </div>
+            
+        <button type="submit" style="background-color:#7FAD39; color:#fff; border-color:#fff;" class="btn btn-outline-primary">Pay Now!</a>
           </div>
-          <br/>
-          
-          
-          
-          <button type="submit" class="btn btn-secondary">
+          <!-- <button type="submit" class="btn btn-secondary" style="margin-left:100px;">
             Pay Now
-          </button>
-          </form>
+          </button> -->
+        </form>
+</div>
 <!-- when paynow is pressed it redirect to process order -->
+ </div>
+</div>
 {% endblock %}
 <!-- jquery below -->

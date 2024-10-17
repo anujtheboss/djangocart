@@ -6,7 +6,8 @@ from django import forms
 from payment.forms import ShippingForm,PaymentForm
 from payment.models import ShippingAddress,Order,OrderItem
 from django.contrib import messages
-from commerce.models import Product
+from commerce.models import Product,Profile
+from django.contrib.auth.models import User
 # Create your views here.
 def process_order(request):
     if request.POST:
@@ -26,42 +27,51 @@ def process_order(request):
         email = my_shipping['shipping_email']
         # Create Shipping Address from session info
         shipping_address = f"{my_shipping['shipping_address1']}\n{my_shipping['shipping_address2']}\n{my_shipping['shipping_city']}\n{my_shipping['shipping_state']}\n{my_shipping['shipping_zipcode']}\n{my_shipping['shipping_country']}"
-        amount_paid = totals
+        grand_total,product_totals = cart.totals()
 
         # Create an Order
         if request.user.is_authenticated:
             # logged in
             user = request.user
             # Create Order
-            create_order = Order(user=user, full_name=full_name, email=email, shipping_address=shipping_address, amount_paid=amount_paid)
+            create_order = Order(user=user, full_name=full_name, email=email, shipping_address=shipping_address, amount_paid=grand_total)
             # getting shipping details above from my_shipping and posting those details in order model in database 
             create_order.save()
             # add order items
                 # Get the order ID
-            order_id = create_order.pk
-            
-            # Get product Info
-            for product in cart_products():
-                # Get product ID
-                product_id = product.id
-                # Get product price
-                if product.is_sale:
-                    price = product.sale_price
-                else:
-                    price = product.price
+                                            # order_id = create_order.pk
+                                            
+                                            # # Get product Info
+                                            # for product in cart_products():
+                                            #     # Get product ID
+                                            #     product_id = product.id
+                                            #     # Get product price
+                                            #     if product.is_sale:
+                                            #         price = product.sale_price
+                                            #     else:
+                                            #         price = product.price
 
-                # Get quantity
-                for key,value in quantities().items():
-                    if int(key) == product.id:
-                        # Create order item
-                        create_order_item = OrderItem(order_id=order_id, product_id=product_id, user=user, quantity=value, price=price)
-                        create_order_item.save()
-                                    
+                                            #     # Get quantity
+                                            #     for key,value in quantities().items():
+                                            #         if int(key) == product.id:
+                                            #             # Create order item
+                                            #             create_order_item = OrderItem(order_id=order_id, product_id=product_id, user=user, quantity=value, price=price)
+                                            #             create_order_item.save()
+                                                                    
 
-            # when checkout the cart must be deleted (lo0p through the sessioin key and delete the session that is saving the information )
+                                            # # when checkout the cart must be deleted (lo0p through the sessioin key and delete the session that is saving the information )
+                                            # for key in list(request.session.keys()):
+                                            #     if key=='session_key':
+                                            #             del request.session[key]
+
+            # delete cart 
             for key in list(request.session.keys()):
-                  if key=='session_key':
-                        del request.session[key]
+                if key=='session_key':
+                    del request.session[key]
+            # delete cart from database after the order is placed!(old cart feild)
+          
+            current_user=Profile.objects.filter(user__id=request.user.id)
+            current_user.update(old_cart="")
             messages.success(request, "Order Placed!")
             return redirect('index')
 
@@ -73,32 +83,32 @@ def process_order(request):
             create_order.save()
             # Add order items
             
-            # Get the order ID
-            order_id = create_order.pk
-            
-            # Get product Info
-            for product in cart_products():
-                # Get product ID
-                product_id = product.id
-                # Get product price
-                if product.is_sale:
-                    price = product.sale_price
-                else:
-                    price = product.price
+                                    # # Get the order ID
+                                    # order_id = create_order.pk
+                                    
+                                    # # Get product Info
+                                    # for product in cart_products():
+                                    #     # Get product ID
+                                    #     product_id = product.id
+                                    #     # Get product price
+                                    #     if product.is_sale:
+                                    #         price = product.sale_price
+                                    #     else:
+                                    #         price = product.price
 
-                # Get quantity
-                for key,value in quantities().items():
-                    if int(key) == product.id:
-                        # Create order item
-                        create_order_item = OrderItem(order_id=order_id, product_id=product_id, quantity=value, price=price)
-                        create_order_item.save()
-            for key in list(request.session.keys()):
-                  if key=='session_key':
-                        del request.session[key]
+                                    #     # Get quantity
+                                    #     for key,value in quantities().items():
+                                    #         if int(key) == product.id:
+                                    #             # Create order item
+                                    #             create_order_item = OrderItem(order_id=order_id, product_id=product_id, quantity=value, price=price)
+                                    #             create_order_item.save()
+                                    # for key in list(request.session.keys()):
+                                    #     if key=='session_key':
+                                    #             del request.session[key]
             messages.success(request, "Order Placed!")
             return redirect('index')                        
-            messages.success(request, "Order Placed!")
-            return redirect('index')
+            # messages.success(request, "Order Placed!")
+            # return redirect('index')
 
 
     else:
@@ -112,19 +122,19 @@ def checkout(request):
     cart = Cart(request)
     cart_products = cart.getproducts
     quantities = cart.getquants
-    totals = cart.totals()
+    grand_total,product_totals = cart.totals()
 
 
     if request.user.is_authenticated:
               # checkout as a loggedin user
         shipping_user = ShippingAddress.objects.get(user__id=request.user.id)
         shipping_form = ShippingForm(request.POST or None, instance=shipping_user)		
-        return render(request, "payment/checkout.html", {'cart_products':cart_products,"quantities":quantities ,'shipping_form':shipping_form,"totals":totals})
+        return render(request, "payment/checkout.html", {'cart_products':cart_products,"quantities":quantities ,'shipping_form':shipping_form,"grand_total":grand_total,"product_totals":product_totals})
     else:
         # checkout as a guest user
         shipping_user = ShippingAddress.objects.get(user__id=request.user.id)
         shipping_form = ShippingForm(request.POST or None)	
-        return render(request, "payment/checkout.html", {"cart_products":cart_products, "quantities":quantities,"shipping_form":shipping_form,"totals":totals})
+        return render(request, "payment/checkout.html", {"cart_products":cart_products, "quantities":quantities,"shipping_form":shipping_form,"grand_total":grand_total,"product_totals":product_totals})
 
 def biling_info(request):
     # request.POST has the detail of the previously filled form before submitting
@@ -132,13 +142,14 @@ def biling_info(request):
         cart = Cart(request)
         cart_products = cart.getproducts
         quantities = cart.getquants
-        totals = cart.totals()
+        grand_total,product_totals = cart.totals()
         # Create a session with Shipping Info
         my_shipping = request.POST
         request.session['my_shipping'] = my_shipping
+        # once in session we can reference it in other views like line 23 in process order
         if request.user.is_authenticated:
             biling_form=PaymentForm ()  
-            return render(request,'payment/biling_info.html',{"cart_products":cart_products, "quantities":quantities,"shipping_info":request.POST,"totals":totals,'biling_form':biling_form})
+            return render(request,'payment/biling_info.html',{"cart_products":cart_products, "quantities":quantities,"shipping_info":request.POST,"grand_total":grand_total,"product_totals":product_totals,'biling_form':biling_form})
         else:
             biling_form=PaymentForm()
             return render(request,'payment/biling_info.html',{"cart_products":cart_products, "quantities":quantities,"shipping_info":request.POST,"totals":totals,'biling_form':biling_form})
@@ -147,4 +158,18 @@ def biling_info(request):
         # return render(request, "payment/biling_info.html", {"cart_products":cart_products, "quantities":quantities, "totals":totals, "shipping_form":shipping_form})	
     else:
         messages.success(request,'access denied!')
+        return redirect('index')
+def shipped_dash(request):
+    if request.user.is_authenticated and request.user.is_superuser:
+      orders=Order.objects.filter(shipped=True)
+      return render(request,"payment/shipped_dash.html",{'orders':orders})
+    else:
+        messages.success(request,"access denied")
+        return redirect('index')
+def not_shipped_dash(request):
+    if request.user.is_authenticated and request.user.is_superuser:
+     orders=Order.objects.filter(shipped=False)
+     return render(request,"payment/not_shipped_dash.html",{'orders':orders})
+    else:
+        messages.success(request,"access denied")
         return redirect('index')
